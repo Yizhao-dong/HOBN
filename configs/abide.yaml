@@ -1,0 +1,57 @@
+data_path: data/abide.npy
+output_dir: outputs/abide_repro
+seed: 42
+folds: 5
+num_classes: 2
+device: cuda
+batch_size: 16
+num_workers: 0
+limit_subjects: null
+
+atlas:
+  names: [aal, ho, cc200]
+  aal_size: 116
+  cc200_size: 200
+
+model:
+  trans_hidden: 64
+  trans_heads: 4
+  trans_layers: 1
+  trans_dropout: 0.1
+  hyper_hidden: 64
+  hyper_out: 16
+  embedding_dim: 32
+  classifier_hidden: 64
+  spatial_topk: 8
+  temporal_topk: 3
+  lambda_sparse: 0.7
+  mu_group: 0.3
+  apc_weight: 0.0
+
+population:
+  fc_dim: 4096
+  hidden_dim: 256
+  topk: 3
+  gamma: 0.0
+
+training:
+  stage1_epochs: 8
+  stage2_epochs: 160
+  stage1_lr: 0.0001
+  stage2_lr: 0.0003
+  stage2_weight_decay: 0.0001
+  grad_clip: 5.0
+  log_interval: 10
+
+functional_systems:
+  cc200_strategy: train_fc_to_named_atlases
+  label_files: {}
+  names:
+    - default_mode
+    - frontoparietal_control
+    - dorsal_attention
+    - ventral_attention_salience
+    - sensorimotor
+    - visual
+    - auditory
+    - subcortical_limbic
