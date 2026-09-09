@@ -279,4 +279,4 @@ def run_cross_validation(cfg: Dict):
         print(f"  {key}: {mean:.4f} +/- {std:.4f}", flush=True)
     with open(os.path.join(cfg["output_dir"], "metrics.json"), "w", encoding="utf-8") as f:
         json.dump({"folds": fold_metrics, "summary": summary}, f, indent=2)
-    return fold_metrics, summary
+    return fold_metrics, summary 
