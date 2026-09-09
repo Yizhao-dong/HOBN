@@ -101,7 +101,7 @@ def train_stage2(
     gamma=0.4,
 ):
     y = torch.from_numpy(labels).long().to(device)
-    best = None
+    # best = None
     pop_model.train()
     for epoch in range(1, epochs + 1):
         optimizer.zero_grad(set_to_none=True)
@@ -120,14 +120,16 @@ def train_stage2(
             )
             pred = final_prob.argmax(axis=1)
             metrics = binary_metrics(test_labels, pred, final_prob)
-            metrics["best_epoch"] = epoch
-            if best is None or metrics["acc"] > best["acc"]:
-                best = metrics
+            # Do not select an epoch using test-set accuracy.
+            # metrics["best_epoch"] = epoch
+            # if best is None or metrics["acc"] > best["acc"]:
+            #     best = metrics
             pop_model.train()
-            epoch_msg += f" test_acc={metrics['acc']:.4f} best_acc={best['acc']:.4f}"
+            # epoch_msg += f" test_acc={metrics['acc']:.4f} best_acc={best['acc']:.4f}"
+            epoch_msg += f" test_acc={metrics['acc']:.4f}"
         if epoch == 1 or epoch == epochs or epoch % log_interval == 0:
             print(epoch_msg, flush=True)
-    return best
+    # return best
 
 
 @torch.no_grad()
@@ -210,7 +212,8 @@ def run_fold(cfg: Dict, fold_id: int, train_idx: np.ndarray, test_idx: np.ndarra
         lr=cfg["training"]["stage2_lr"],
         weight_decay=cfg["training"]["stage2_weight_decay"],
     )
-    best_stage2 = train_stage2(
+    # best_stage2 = train_stage2(
+    train_stage2(
         pop_model,
         pop_train_x,
         pop_train_h,
@@ -236,8 +239,9 @@ def run_fold(cfg: Dict, fold_id: int, train_idx: np.ndarray, test_idx: np.ndarra
     )
     pred = final_prob.argmax(axis=1)
     metrics = binary_metrics(y_test, pred, final_prob)
-    if best_stage2 is not None:
-        metrics = dict(best_stage2)
+    # Keep the metrics computed from the final trained model.
+    # if best_stage2 is not None:
+    #     metrics = dict(best_stage2)
     print(
         "  fold metrics: "
         + " ".join(f"{k}={v:.4f}" for k, v in metrics.items()),
